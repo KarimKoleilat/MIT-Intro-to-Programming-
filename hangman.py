@@ -118,7 +118,7 @@ def get_available_letters(letters_guessed):
 
 
     
-    
+secret_word = "hello"    
 
 def hangman(secret_word):
     '''
@@ -145,8 +145,44 @@ def hangman(secret_word):
     
     Follows the other limitations detailed in the problem write-up.
     '''
-    # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    word_len = len(secret_word)
+    guesses = 6
+    guessed_word = get_guessed_word(secret_word,[])
+    letters_guessed = []
+    print(f"The secret word contains {word_len} letters and you have {guesses} guesses left!")
+    print("Please guess one letter at a time")
+    alphabet_letters = get_available_letters([])
+    while(guesses>0):
+        
+        guessed_letter = input("Guess a letter!")
+        #while loop to make sure guess is valid
+        while (guessed_letter not in alphabet_letters):
+            guessed_letter = input("Oops, that's not a valid guess, guess again!")
+        #letter guess has not been guessed before
+        while(guessed_letter in letters_guessed):
+            guessed_letter = input("You guessed that letter already, guess another one!")
+        
+        letters_guessed.append(guessed_letter)
+        let_avail = get_available_letters(letters_guessed)
+        guesses -= 1
+
+        #conditional updating the guessed_word variable and instructing the player further.
+        if guessed_letter in secret_word:
+            guessed_word = get_guessed_word(secret_word,letters_guessed)
+            print(f"Nice Guess! Here's what you guessed so far {guessed_word}")
+        
+        elif guessed_letter not in secret_word:
+            print(f"Better luck next guess! Here's what you guessed so far {guessed_word}")
+        print(f"you have {guesses} left!")
+
+        if (is_word_guessed(secret_word, letters_guessed)):
+            print("You guessed it!!!")
+            break
+        elif(guesses ==0 and not is_word_guessed(secret_word,letters_guessed)):
+            print("You didn't make it! play again?!")
+            break
+
+            
 
 
 
@@ -158,7 +194,7 @@ def hangman(secret_word):
 
 # -----------------------------------
 
-
+hangman("hello")
 
 def match_with_gaps(my_word, other_word):
     '''
@@ -228,13 +264,13 @@ def hangman_with_hints(secret_word):
 
 
 if __name__ == "__main__":
-    # pass
+     pass
 
     # To test part 2, comment out the pass line above and
     # uncomment the following two lines.
     
-    secret_word = choose_word(wordlist)
-    hangman(secret_word)
+    #secret_word = choose_word(wordlist)
+    #hangman(secret_word)
 
 ###############
     
