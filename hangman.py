@@ -1,3 +1,4 @@
+
 # Problem Set 2, hangman.py
 # Name: 
 # Collaborators:
@@ -146,12 +147,19 @@ def hangman(secret_word):
     Follows the other limitations detailed in the problem write-up.
     '''
     word_len = len(secret_word)
-    guesses = 6
+    guesses = 3
     guessed_word = get_guessed_word(secret_word,[])
     letters_guessed = []
     print(f"The secret word contains {word_len} letters and you have {guesses} guesses left!")
     print("Please guess one letter at a time")
     alphabet_letters = get_available_letters([])
+    unique_letters = 0
+    secret_list = [char for char in secret_word]
+    for char in secret_list:
+    	if char not in unique_letters:
+    		unique_letters +=1
+
+
     while(guesses>0):
         
         guessed_letter = input("Guess a letter!")
@@ -164,7 +172,6 @@ def hangman(secret_word):
         
         letters_guessed.append(guessed_letter)
         let_avail = get_available_letters(letters_guessed)
-        guesses -= 1
 
         #conditional updating the guessed_word variable and instructing the player further.
         if guessed_letter in secret_word:
@@ -173,13 +180,17 @@ def hangman(secret_word):
         
         elif guessed_letter not in secret_word:
             print(f"Better luck next guess! Here's what you guessed so far {guessed_word}")
+            guesses -= 1
+
         print(f"you have {guesses} left!")
 
         if (is_word_guessed(secret_word, letters_guessed)):
             print("You guessed it!!!")
+            score = guesses*unique_letters
             break
         elif(guesses ==0 and not is_word_guessed(secret_word,letters_guessed)):
             print("You didn't make it! play again?!")
+            print(f"the word is {secret_word}")
             break
 
             
@@ -194,7 +205,7 @@ def hangman(secret_word):
 
 # -----------------------------------
 
-hangman("hello")
+
 
 def match_with_gaps(my_word, other_word):
     '''
@@ -205,8 +216,35 @@ def match_with_gaps(my_word, other_word):
         _ , and my_word and other_word are of the same length;
         False otherwise: 
     '''
-    # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    
+    #first checks if lengths are the same
+    alphabet_letters = get_available_letters([])
+    temp_word = my_word
+    temp_word = temp_word.replace("_ ", "*")
+    if len(temp_word) != len(other_word):
+    	return False
+
+    #initializes a temporary place holder for the guessed word so far and replaces the "_ " with "*" for ease of indexing and comparison with other_word
+    
+
+    #loop over my_word and return false if there is a discrepancy
+    #ignores the comparison if the char in my_word is a *
+    for idx in range(len(temp_word)):
+    	if temp_word[idx] == "*":
+    		print(f"this is a star {temp_word[idx]}")
+    		pass
+    	elif temp_word[idx] != other_word[idx]:
+    		print(f"this is a false letter not matching {temp_word[idx]}")
+    		return False
+    #if all are cleared and no false --> return True
+    return True
+
+
+wrd = "a_ _ le"
+other_word = "apple"
+print(match_with_gaps(wrd, other_word))
+
+
 
 
 
@@ -221,7 +259,12 @@ def show_possible_matches(my_word):
 
     '''
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    list_of_matches = []
+    word_list = load_words()
+    for word in word_list:
+    	if match_with_gaps(my_word,word):
+    		list_of_matches.append(word)
+    return list_of_matches
 
 
 
