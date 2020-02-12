@@ -74,8 +74,8 @@ class Message(object):
 
         list_words = load_words(WORDLIST_FILENAME)
         list_message = text.split(" ")
-        list_message = [[''.join([i for i in word if i.isalpha()] for word in list_message ]
-        
+        list_message = [''.join([i for i in word if i.isalpha()]) for word in list_message ]
+        self.valid_words = list_message
 
 
 
@@ -88,7 +88,7 @@ class Message(object):
         
         Returns: self.message_text
         '''
-        pass #delete this line and replace with your code here
+        return self.message_text
 
     def get_valid_words(self):
         '''
@@ -97,7 +97,7 @@ class Message(object):
         
         Returns: a COPY of self.valid_words
         '''
-        pass #delete this line and replace with your code here
+        return self.valid_words 
 
     def build_shift_dict(self, shift):
         '''
@@ -113,7 +113,19 @@ class Message(object):
         Returns: a dictionary mapping a letter (string) to 
                  another letter (string). 
         '''
-        pass #delete this line and replace with your code here
+
+        #using modulus operation to keep cycling within the lowercase and uppercase ascii number intervals. 
+        #normalize to 0 and add shift using ord(letter) - 65 or 97 and applying the shift then returning it back to upper or lower case. 
+
+
+
+        alph_lower =  [(let, chr(97+(ord(let) - 97 + shift)%26)) for let in string.ascii_lowercase]
+        alph_upper =  [(let, chr(65+(ord(let) - 65 + shift)%26)) for let in string.ascii_uppercase]
+        cipher_list = dict(alph_lower+ alph_upper)
+
+        
+        return cipher_list
+        
 
     def apply_shift(self, shift):
         '''
@@ -127,7 +139,12 @@ class Message(object):
         Returns: the message text (string) in which every character is shifted
              down the alphabet by the input shift
         '''
-        pass #delete this line and replace with your code here
+        message = list(self.message_text)
+
+        shift_dict = self.build_shift_dict(shift)
+        cipher_message = [shift_dict[let] if (let in string.ascii_lowercase+string.ascii_uppercase) else let for let in message ]
+        cipher_text = ''.join(cipher_message)
+        return cipher_text
 
 class PlaintextMessage(Message):
     def __init__(self, text, shift):
@@ -145,7 +162,14 @@ class PlaintextMessage(Message):
             self.message_text_encrypted (string, created using shift)
 
         '''
-        pass #delete this line and replace with your code here
+        self.shift = shift
+        self.message_text = text
+        self.encryption_dict = self.build_shift_dict
+        list_words = load_words(WORDLIST_FILENAME)
+        list_message = text.split(" ")
+        list_message = [''.join([i for i in word if i.isalpha()]) for word in list_message ]
+        self.valid_words = list_message
+        self.message_text_encrypted = self.apply_shift(shift)
 
     def get_shift(self):
         '''
@@ -153,7 +177,7 @@ class PlaintextMessage(Message):
         
         Returns: self.shift
         '''
-        pass #delete this line and replace with your code here
+        return self.shift
 
     def get_encryption_dict(self):
         '''
@@ -161,7 +185,7 @@ class PlaintextMessage(Message):
         
         Returns: a COPY of self.encryption_dict
         '''
-        pass #delete this line and replace with your code here
+        return self.encryption_dict
 
     def get_message_text_encrypted(self):
         '''
@@ -169,7 +193,7 @@ class PlaintextMessage(Message):
         
         Returns: self.message_text_encrypted
         '''
-        pass #delete this line and replace with your code here
+        return self.message_text_encrypted
 
     def change_shift(self, shift):
         '''
@@ -181,7 +205,7 @@ class PlaintextMessage(Message):
 
         Returns: nothing
         '''
-        pass #delete this line and replace with your code here
+        self.shift = shift
 
 
 class CiphertextMessage(Message):
