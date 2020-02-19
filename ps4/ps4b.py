@@ -219,7 +219,8 @@ class CiphertextMessage(Message):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        super(CiphertextMessage,self).__init__(text)
+        self.text = text 
 
     def decrypt_message(self):
         '''
@@ -237,7 +238,37 @@ class CiphertextMessage(Message):
         Returns: a tuple of the best shift value used to decrypt the message
         and the decrypted message text using that shift value
         '''
-        pass #delete this line and replace with your code here
+        
+        
+        ciphers = []
+
+        list_words = load_words(WORDLIST_FILENAME)
+        
+        
+
+        for s in range(26):
+            tmp_decrypt = self.apply_shift(26-s)
+            decrypt_message = tmp_decrypt.split(" ")
+            #word, print(decrypt_message)
+            #decrypt_message = [''.join([i for i in word if i.isalpha()]) for word in decrypt_message ]
+            valid_word_score = 0
+            for word in decrypt_message: 
+                if is_word(list_words,word):
+                    valid_word_score +=1 
+            ciphers.append((valid_word_score,decrypt_message))
+        
+
+        max_idx = [y[1] for x,y in enumerate(ciphers) if y[0] == max(ciphers)[0]]
+        print(self.text)
+        print(' '.join(max_idx[0]))
+
+        #[print(" ".join(ciph[1])) for ciph in ciphers]
+
+
+
+
+
+
 
 if __name__ == '__main__':
 
