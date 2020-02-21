@@ -260,7 +260,7 @@ class CiphertextMessage(Message):
 
         max_idx = [y[1] for x,y in enumerate(ciphers) if y[0] == max(ciphers)[0]]
         print(self.text)
-        print(' '.join(max_idx[0]))
+        return ' '.join(max_idx[0])
 
         #[print(" ".join(ciph[1])) for ciph in ciphers]
 

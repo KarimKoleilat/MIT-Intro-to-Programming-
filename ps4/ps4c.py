@@ -70,7 +70,12 @@ class SubMessage(object):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        self.message_text = text
+        list_words = load_words(WORDLIST_FILENAME)
+        list_message = text.split(" ")
+        list_message = [''.join([i for i in word if i.isalpha()]) for word in list_message ]
+        self.valid_words = list_message
+
     
     def get_message_text(self):
         '''
@@ -78,7 +83,7 @@ class SubMessage(object):
         
         Returns: self.message_text
         '''
-        pass #delete this line and replace with your code here
+        return self.message_text
 
     def get_valid_words(self):
         '''
@@ -87,7 +92,7 @@ class SubMessage(object):
         
         Returns: a COPY of self.valid_words
         '''
-        pass #delete this line and replace with your code here
+        return [word for word in self.valid_words]
                 
     def build_transpose_dict(self, vowels_permutation):
         '''
@@ -109,7 +114,17 @@ class SubMessage(object):
                  another letter (string). 
         '''
         
-        pass #delete this line and replace with your code here
+        transpose_dict = {}
+        perm_lower = vowels_permutation.lower()
+        perm_upper = vowels_permutation.upper()
+
+        for idx in range(5):
+            transpose_dict[VOWELS_LOWER[idx]] =perm_lower[idx]
+            transpose_dict[VOWELS_UPPER[idx]] =perm_upper[idx] 
+        for idy in range(21):
+            transpose_dict[CONSONANTS_LOWER[idy]] =CONSONANTS_LOWER[idy]
+            transpose_dict[CONSONANTS_UPPER[idy]] =CONSONANTS_UPPER[idy] 
+        return transpose_dict
     
     def apply_transpose(self, transpose_dict):
         '''
@@ -118,9 +133,14 @@ class SubMessage(object):
         Returns: an encrypted version of the message text, based 
         on the dictionary
         '''
-        
-        pass #delete this line and replace with your code here
-        
+        trans_keys = transpose_dict.keys()
+        trans_msg = "".join([transpose_dict[let] if let in trans_keys else let for let in self.message_text])
+        return trans_msg
+
+
+
+
+
 class EncryptedSubMessage(SubMessage):
     def __init__(self, text):
         '''
@@ -132,7 +152,10 @@ class EncryptedSubMessage(SubMessage):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        super(EncryptedSubMessage,self).__init__(text)
+        self.text = text
+
+
 
     def decrypt_message(self):
         '''
@@ -152,8 +175,33 @@ class EncryptedSubMessage(SubMessage):
         
         Hint: use your function from Part 4A
         '''
-        pass #delete this line and replace with your code here
-    
+        vowel_perms = get_permutations(VOWELS_LOWER)
+        
+        list_words = load_words(WORDLIST_FILENAME)
+        score = 0
+        current_msg = [self.message_text]
+        #print(vowel_perms)
+        for perm in vowel_perms: 
+            trans_dict = self.build_transpose_dict(perm)
+            temp_decrypt = self.apply_transpose(trans_dict) 
+            temp_decrypt = temp_decrypt.split(" ")
+            temp_decrypt = [''.join([i for i in word if i.isalpha()]) for word in temp_decrypt]
+            temp_score = 0
+            #print(temp_decrypt)
+            for word in temp_decrypt:
+                
+                if is_word(list_words, word):
+                    print(word)
+                    temp_score += 1
+            if temp_score > score: 
+                current_msg = [(" ".join(temp_decrypt))]
+                score = temp_score
+                #print(current_msg)
+            elif temp_score == score and score > 0 and " ".join(temp_decrypt) not in current_msg : 
+                current_msg.append(" ".join(temp_decrypt))
+        return current_msg
+
+
 
 if __name__ == '__main__':
 
